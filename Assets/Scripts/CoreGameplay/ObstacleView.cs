@@ -4,7 +4,7 @@ using Utils;
 
 namespace CoreGameplay
 {
-    public class ObstacleView : MonoBehaviour
+    public class ObstacleView : LevelObjectView
     {
         //TODO: add pooling of obstacles
         [SerializeField] private Material BaseMaterial;
