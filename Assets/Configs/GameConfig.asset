@@ -12,4 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6e4f9bad3c6a494689eff16d1fbce897, type: 3}
   m_Name: GameConfig
   m_EditorClassIdentifier: 
-  Levels: []
+  PlayerMoveSpeed: 1.5
+  Levels:
+  - {fileID: 11400000, guid: d6ab1455a32b6d94fbd6eada524545bb, type: 2}
+  - {fileID: 11400000, guid: 4e2e526d1fb6b7b4ab6620ce4324c98d, type: 2}

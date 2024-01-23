@@ -1,6 +1,7 @@
 using System;
 using System.Linq;
 using CoreGameplay;
+using UI;
 using UnityEngine;
 
 public class PlayerController : MonoBehaviour
@@ -15,6 +16,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private Vector3 ProjectilesFlyDirection;
     [SerializeField] private float GrownProjectileSpeed;
     [SerializeField] private float StartSize;
+    [SerializeField] private float MinSize;
     [SerializeField] private int ProjectilePoolSize;
     [SerializeField] private Animator PlayerAnimator;
 
@@ -123,6 +125,12 @@ public class PlayerController : MonoBehaviour
         else if (_isTapped && _currentProjectile != null)
         {
             OnFinishTap();
+        }
+
+        if (CurrentSize <= MinSize)
+        {
+            ScreensManager.ChangeScreen(ScreensType.FailLevelScreen);
+            _isTapped = false;
         }
     }
 

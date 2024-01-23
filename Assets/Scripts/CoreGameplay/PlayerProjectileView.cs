@@ -1,5 +1,3 @@
-using System;
-using DG.Tweening;
 using UnityEngine;
 using Utils;
 
@@ -8,7 +6,6 @@ namespace CoreGameplay
     public class PlayerProjectileView : MonoBehaviour
     {
         [SerializeField] private float SizeChangeMultiplier;
-        [SerializeField] private float ModeDistance;
         [SerializeField] private float ModeSpeed;
         [SerializeField] private CollisionProvider Collider;
         [SerializeField] private Transform Body;
@@ -72,9 +69,6 @@ namespace CoreGameplay
         {
             //TODO: add SFX
 
-            var targetPosition = direction * ModeDistance;
-            var duration = ModeSpeed * ModeDistance;
-            //transform.DOMove(targetPosition, duration).OnComplete(OnMoveComplete);
             _rigidbody.AddForce(direction * ModeSpeed * 1000f);
         }
 

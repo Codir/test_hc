@@ -1,4 +1,4 @@
-using System.Threading.Tasks;
+using System.Collections;
 using UnityEngine;
 using Utils;
 
@@ -6,55 +6,61 @@ namespace CoreGameplay
 {
     public class ObstacleView : LevelObjectView
     {
-        //TODO: add pooling of obstacles
         [SerializeField] private Material BaseMaterial;
         [SerializeField] private Material OnHitMaterial;
         [SerializeField] private Renderer Renderer;
         [SerializeField] private CollisionProvider Collider;
-
         [SerializeField] private int ExplosionDelay;
-        //TODO: add pooling of explosions
         [SerializeField] private ExplosionView ExplosionPrefab;
 
         private float _charge;
+        private IEnumerator _explosion;
 
-        private void Start()
+        private void OnEnable()
         {
             Collider.OnHitEvent += OnHit;
 
             Init();
         }
 
-        private void OnDestroy()
+        private void OnDisable()
         {
-            //TODO: make for using same object instead obstacleView and IHittable
-            CoreGameplayController.Instance.OnRemoveObstacle(this);
-            
             Collider.OnHitEvent -= OnHit;
+
+            if (_explosion == null) return;
+
+            StopCoroutine(_explosion);
+            _explosion = null;
         }
 
-        public void Init()
+        private void Init()
         {
             Renderer.material = BaseMaterial;
         }
 
-        public void OnHit(float value)
+        private void OnHit(float value)
         {
             Renderer.material = OnHitMaterial;
 
             _charge = value;
-            Explosion();
+            _explosion = Explosion();
+            StartCoroutine(_explosion);
         }
 
-        private async void Explosion()
+        private IEnumerator Explosion()
         {
-            await Task.Delay(ExplosionDelay);
+            yield return new WaitForSeconds(ExplosionDelay);
 
+            CreateExplosion();
+
+            ObjectsPoolController.ReturnLevelObjectToPool(this);
+            CoreGameplayController.Instance.OnRemoveObstacle(this);
+        }
+
+        private void CreateExplosion()
+        {
             var explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
             explosion.Init(_charge);
-
-            //TODO: move to pooling manager
-            Destroy(gameObject);
         }
     }
 }

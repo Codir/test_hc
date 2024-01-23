@@ -1,32 +1,31 @@
 using System.Collections.Generic;
 using Configs;
+using CoreGameplay.Models;
 using UnityEngine;
 
 namespace CoreGameplay
 {
     public class LevelController : MonoBehaviour
     {
-        [SerializeField] public CoreGameplayController CoreGameplayController;
+        public CoreGameplayController CoreGameplayController;
 
         [SerializeField] private PlayerController PlayerPrefab;
         [SerializeField] private PlayerPathView PlayerPathPrefab;
         [SerializeField] private TargetView ExitPrefab;
-        [SerializeField] private ObstacleView ObstaclePrefab;
+        [SerializeField] private GameConfig GameConfig;
 
         //TODO: remove
         public static LevelController Instance;
 
-        //TODO: add spawn player and target, and create PathView by this two params
         [SerializeField] private Transform PlayerSpawnPosition;
         [SerializeField] private Transform ExitSpawnPosition;
         [SerializeField] private Transform LevelContainer;
-        [SerializeField] private LevelConfig LevelConfig;
 
         private PlayerController _player;
         private PlayerPathView _pathView;
         private TargetView _exit;
 
-        private List<LevelObjectView> _obstacles = new();
+        private readonly List<LevelObjectView> _levelObjects = new();
         private Vector3 _pathPosition;
 
         private void Awake()
@@ -36,11 +35,19 @@ namespace CoreGameplay
 
         private void Start()
         {
+            Init();
+        }
+
+        private void Init()
+        {
+            CoreGameplayController = new CoreGameplayController(GameConfig);
             LoadLevel();
         }
 
         public void LoadLevel()
         {
+            var levelNumber = AppController.Instance.GameStateModel.LevelNumber;
+
             _player = Instantiate(PlayerPrefab, PlayerSpawnPosition.position, Quaternion.identity);
             _exit = Instantiate(ExitPrefab, ExitSpawnPosition.position, Quaternion.identity);
 
@@ -51,14 +58,22 @@ namespace CoreGameplay
             _pathView.OnPathFreeAction += CoreGameplayController.OnLevelCompleted;
             _pathView.Clear();
 
-            CoreGameplayController.Init(_player, _pathView, _exit);
+            var coreGameplayModel = new CoreGameplayModel
+            {
+                Player = _player,
+                PathView = _pathView,
+                Exit = _exit
+            };
 
-            GenerateLevel();
+            CoreGameplayController.OnLoadLevel(coreGameplayModel);
+            GenerateLevel(levelNumber);
         }
 
-        private void GenerateLevel()
+        private void GenerateLevel(int levelNumber)
         {
-            var levelConfig = LevelConfig;
+            var levelConfig = GetLevelConfigByNumber(levelNumber);
+
+            if (levelConfig == null) return;
 
             var segmentsCount = levelConfig.Segments.Length;
             //TODO: take 2f from padding value
@@ -72,13 +87,17 @@ namespace CoreGameplay
                     _pathPosition - (pathLength / 2f - (segmentId + 0.5f) * segmentLength) * Vector3.forward;
                 GenerateSegment(levelConfig.Segments[segmentId], segmentLength, segmentPosition);
             }
-
-            /*var pathPosition = (PlayerSpawnPosition.position + ExitSpawnPosition.position) / 2f;
-            var obstacle = Instantiate(ObstaclePrefab, pathPosition, Quaternion.identity);
-            _obstacles.Add(obstacle);*/
         }
 
-        //TODO: move it to level generator
+        private LevelConfig GetLevelConfigByNumber(int levelNumber)
+        {
+            if (GameConfig == null) return null;
+
+            return GameConfig.Levels.Length < levelNumber
+                ? GameConfig.Levels[levelNumber]
+                : GameConfig.Levels[levelNumber % GameConfig.Levels.Length];
+        }
+
         private void GenerateSegment(LevelSegmentConfig segmentConfig, float segmentLength, Vector3 segmentPosition)
         {
             var sizeX = segmentConfig.LevelObject.Size.x;
@@ -97,9 +116,12 @@ namespace CoreGameplay
                     var levelObjectPosition = segmentPosition;
                     levelObjectPosition.x += (-rows / 2f + x + 1) * sizeX;
                     levelObjectPosition.z += (-cols / 2f + z + 1) * sizeZ;
-                    var obstacle = Instantiate(segmentConfig.LevelObject, LevelContainer);
-                    obstacle.transform.position = levelObjectPosition;
-                    _obstacles.Add(obstacle);
+                    var levelObject = ObjectsPoolController.GetLevelObject(segmentConfig.LevelObject,
+                        levelObjectPosition,
+                        Quaternion.identity);
+                    //var levelObject = Instantiate(segmentConfig.LevelObject, LevelContainer);
+                    //levelObject.transform.position = levelObjectPosition;
+                    _levelObjects.Add(levelObject);
                 }
             }
         }
@@ -108,12 +130,30 @@ namespace CoreGameplay
         {
             _player.OnCurrentSizeChangedEvent -= _pathView.OnCurrentSizeChanged;
             _pathView.OnPathFreeAction -= CoreGameplayController.OnLevelCompleted;
+            CoreGameplayController.OnUnloadLevel();
 
-            _obstacles.Clear();
+            foreach (var levelObject in _levelObjects)
+            {
+                ObjectsPoolController.ReturnLevelObjectToPool(levelObject);
+                //Destroy(levelObject.gameObject);
+            }
+
+            _levelObjects.Clear();
 
             Destroy(_player.gameObject);
             Destroy(_pathView.gameObject);
             Destroy(_exit.gameObject);
+        }
+
+        public void NextLevel()
+        {
+            AppController.Instance.GameStateModel.LevelNumber++;
+        }
+
+        public void ReloadLevel()
+        {
+            UnloadLevel();
+            LoadLevel();
         }
     }
 }
