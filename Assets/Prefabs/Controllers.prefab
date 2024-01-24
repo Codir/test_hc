@@ -240,6 +240,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 11400000, guid: d6ab1455a32b6d94fbd6eada524545bb, type: 2}
     - target: {fileID: 3915292016371540169, guid: e05695d5366d4944a96978afbf01738c, type: 3}
+      propertyPath: PaddingValue
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3915292016371540169, guid: e05695d5366d4944a96978afbf01738c, type: 3}
       propertyPath: PlayerPrefab
       value: 
       objectReference: {fileID: 9125675058866414894, guid: a9720955fef87cb4e807686c8f2a57fd, type: 3}

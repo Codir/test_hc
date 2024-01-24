@@ -2,19 +2,19 @@ using System.Collections;
 using UnityEngine;
 using Utils;
 
-namespace CoreGameplay
+namespace CoreGameplay.Controllers
 {
-    public class ObstacleView : LevelObjectView
+    public class ObstacleController : BaseLevelObject
     {
         [SerializeField] private Material BaseMaterial;
         [SerializeField] private Material OnHitMaterial;
         [SerializeField] private Renderer Renderer;
         [SerializeField] private CollisionProvider Collider;
         [SerializeField] private int ExplosionDelay;
-        [SerializeField] private ExplosionView ExplosionPrefab;
+        [SerializeField] private ExplosionController ExplosionPrefab;
 
         private float _charge;
-        private IEnumerator _explosion;
+        private IEnumerator _explosionCoroutine;
 
         private void OnEnable()
         {
@@ -27,10 +27,10 @@ namespace CoreGameplay
         {
             Collider.OnHitEvent -= OnHit;
 
-            if (_explosion == null) return;
+            if (_explosionCoroutine == null) return;
 
-            StopCoroutine(_explosion);
-            _explosion = null;
+            StopCoroutine(_explosionCoroutine);
+            _explosionCoroutine = null;
         }
 
         private void Init()
@@ -43,8 +43,8 @@ namespace CoreGameplay
             Renderer.material = OnHitMaterial;
 
             _charge = value;
-            _explosion = Explosion();
-            StartCoroutine(_explosion);
+            _explosionCoroutine = Explosion();
+            StartCoroutine(_explosionCoroutine);
         }
 
         private IEnumerator Explosion()
@@ -54,13 +54,15 @@ namespace CoreGameplay
             CreateExplosion();
 
             ObjectsPoolController.ReturnLevelObjectToPool(this);
-            CoreGameplayController.Instance.OnRemoveObstacle(this);
+            LevelController.Instance.OnRemoveObstacle(this);
         }
 
         private void CreateExplosion()
         {
-            var explosion = Instantiate(ExplosionPrefab, transform.position, Quaternion.identity);
+            var explosion = Instantiate(ExplosionPrefab, LevelController.Instance.LevelContainer);
+            explosion.transform.position = transform.position;
             explosion.Init(_charge);
+            LevelController.Instance.AddExplosion(explosion);
         }
     }
 }

@@ -1,8 +1,8 @@
 ﻿using UnityEngine;
 
-namespace CoreGameplay
+namespace CoreGameplay.Controllers
 {
-    public class LevelObjectView : MonoBehaviour
+    public abstract class BaseLevelObject : MonoBehaviour
     {
         public string Name;
         public Vector3 Size = Vector3.one;

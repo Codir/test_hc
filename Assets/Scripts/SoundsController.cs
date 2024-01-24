@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Linq;
 using UnityEngine;
+using Utils;
 
 public enum Sfx
 {
@@ -23,15 +24,11 @@ public class SoundsController : MonoBehaviour
 {
     [SerializeField] private SoundEntity[] Sounds;
 
-    private static SoundsController _instance;
+    private static SoundEntity[] _sounds;
 
     private void Awake()
     {
-        //TODO: remove this
-        if (_instance == null)
-        {
-            _instance = this;
-        }
+        _sounds = Sounds;
     }
 
     public static void PlaySound(Sfx type)
@@ -47,6 +44,6 @@ public class SoundsController : MonoBehaviour
 
     private static SoundEntity GetSoundByType(Sfx type)
     {
-        return _instance.Sounds.FirstOrDefault(sfxEntity => sfxEntity.Type == type);
+        return _sounds.FirstOrDefault(sfxEntity => sfxEntity.Type == type);
     }
 }

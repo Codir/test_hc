@@ -2,7 +2,7 @@
 {
     public class FailScreenModel : IBaseScreenModel
     {
-        public int Level;
+        public readonly int Level;
 
         public FailScreenModel()
         {

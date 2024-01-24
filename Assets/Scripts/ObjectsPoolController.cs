@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using CoreGameplay;
+using CoreGameplay.Controllers;
 using UnityEngine;
 
 [Serializable]
 public class ObjectsPoolConfig
 {
-    public LevelObjectView Prefab;
+    public BaseLevelObject Prefab;
     public int Count;
 }
 
@@ -16,22 +16,14 @@ public class ObjectsPoolController : MonoBehaviour
     [SerializeField] private Transform LevelContainer;
     [SerializeField] private ObjectsPoolConfig[] ObjectsPoolConfigs;
 
-    private static ObjectsPoolController _instance;
+    private static Transform _levelContainer;
 
-    public static ObjectsPoolController Instance => _instance;
-
-    private static Dictionary<string, LevelObjectView[]> _objectsPools;
+    private static Dictionary<string, BaseLevelObject[]> _objectsPools;
     private static Dictionary<string, Transform> _objectsContainers;
 
     private void Awake()
     {
-        //TODO: remove this
-        if (_instance == null)
-        {
-            _instance = this;
-        }
-
-        AppController.Instance.ObjectsPoolController = this;
+        _levelContainer = LevelContainer;
     }
 
     private void Start()
@@ -41,7 +33,7 @@ public class ObjectsPoolController : MonoBehaviour
 
     private void Init()
     {
-        _objectsPools = new Dictionary<string, LevelObjectView[]>();
+        _objectsPools = new Dictionary<string, BaseLevelObject[]>();
         _objectsContainers = new Dictionary<string, Transform>();
 
         foreach (var objectsPoolConfig in ObjectsPoolConfigs)
@@ -55,7 +47,7 @@ public class ObjectsPoolController : MonoBehaviour
         var objectName = objectsPoolConfig.Prefab.Name;
         var parent = GetParent(objectsPoolConfig.Prefab.Name);
 
-        var levelObjects = new LevelObjectView[objectsPoolConfig.Count];
+        var levelObjects = new BaseLevelObject[objectsPoolConfig.Count];
         for (var i = 0; i < objectsPoolConfig.Count; i++)
         {
             levelObjects[i] = Instantiate(objectsPoolConfig.Prefab, parent.transform);
@@ -66,7 +58,7 @@ public class ObjectsPoolController : MonoBehaviour
     }
 
     public static void CreateObjectsPool<T>(T prefab, int count)
-        where T : LevelObjectView
+        where T : BaseLevelObject
     {
         var key = typeof(T).ToString();
         if (_objectsPools.ContainsKey(key))
@@ -74,7 +66,7 @@ public class ObjectsPoolController : MonoBehaviour
             ClearObjectsPool<T>();
         }
 
-        var objectsPool = new LevelObjectView[count];
+        var objectsPool = new BaseLevelObject[count];
         var parent = GetParent(prefab.Name);
 
         for (var i = 0; i < count; i++)
@@ -100,12 +92,12 @@ public class ObjectsPoolController : MonoBehaviour
             Destroy(_objectsContainers[key].gameObject);
         }
 
-        _objectsPools = new Dictionary<string, LevelObjectView[]>();
+        _objectsPools = new Dictionary<string, BaseLevelObject[]>();
         _objectsContainers = new Dictionary<string, Transform>();
     }
 
     public static void ClearObjectsPool<T>()
-        where T : LevelObjectView
+        where T : BaseLevelObject
     {
         var key = typeof(T).ToString();
         if (!_objectsPools.ContainsKey(key)) return;
@@ -122,7 +114,7 @@ public class ObjectsPoolController : MonoBehaviour
     }
 
     public static T GetLevelObject<T>(T prefab, Vector3 position, Quaternion rotation)
-        where T : LevelObjectView
+        where T : BaseLevelObject
     {
         var key = typeof(T).ToString();
         var parent = GetParent(prefab.Name);
@@ -143,14 +135,14 @@ public class ObjectsPoolController : MonoBehaviour
         if (_objectsContainers.ContainsKey(name)) return _objectsContainers[name];
 
         var parent = new GameObject(name).transform;
-        parent.SetParent(_instance.LevelContainer);
+        parent.SetParent(_levelContainer);
         _objectsContainers.Add(name, parent);
 
         return _objectsContainers[name];
     }
 
-    private static T GetLevelObjectFromPool<T>(LevelObjectView prefab)
-        where T : LevelObjectView
+    private static T GetLevelObjectFromPool<T>(BaseLevelObject prefab)
+        where T : BaseLevelObject
     {
         var objectsPool = _objectsPools[prefab.Name];
 
@@ -165,9 +157,9 @@ public class ObjectsPoolController : MonoBehaviour
         return objectsPool.First() as T;
     }
 
-    public static void ReturnLevelObjectToPool(LevelObjectView levelObject)
+    public static void ReturnLevelObjectToPool(BaseLevelObject baseLevelObject)
     {
-        var go = levelObject.gameObject;
+        var go = baseLevelObject.gameObject;
         go.SetActive(false);
     }
 }

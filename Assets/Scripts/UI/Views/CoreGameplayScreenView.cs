@@ -1,4 +1,4 @@
-﻿using CoreGameplay;
+﻿using CoreGameplay.Controllers;
 using TMPro;
 using UI.Models;
 using UnityEngine;
@@ -40,8 +40,7 @@ namespace UI.Views
         {
             SoundsController.PlaySound(Sfx.Click);
 
-            LevelController.Instance.UnloadLevel();
-            LevelController.Instance.LoadLevel();
+            LevelController.Instance.ReloadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);
         }
     }

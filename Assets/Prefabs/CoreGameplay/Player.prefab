@@ -178,7 +178,7 @@ GameObject:
   m_Component:
   - component: {fileID: 7056454461131866156}
   - component: {fileID: 9125675058866414894}
-  - component: {fileID: 2781014722608664120}
+  - component: {fileID: 3627884014556478118}
   - component: {fileID: 7164884558824289777}
   - component: {fileID: 8215573561609057156}
   m_Layer: 0
@@ -218,14 +218,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   ProjectilePrefab: {fileID: 1583037405820431019, guid: ae0789845eabaca4394c463f41219f36, type: 3}
   ProjectilesSpawnPosition: {fileID: 4511567334725103629}
-  Body: {fileID: 5615293954357386245}
-  ProjectilesFlyDirection: {x: 0, y: 0, z: 1}
+  ProjectilesDirection: {x: 0, y: 0, z: 1}
   GrownProjectileSpeed: 0.1
   StartSize: 1
   MinSize: 0.1
   ProjectilePoolSize: 10
   PlayerAnimator: {fileID: 4801576690524417107}
---- !u!114 &2781014722608664120
+  ChargingComponent: {fileID: 3627884014556478118}
+--- !u!114 &3627884014556478118
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -234,9 +234,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5219382937646730414}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4e001534df702bb4081ff8fb27c2652d, type: 3}
+  m_Script: {fileID: 11500000, guid: 472a48ecc49f49fbbe7d1ac3ead7ffe6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Body: {fileID: 3248227944113167791}
+  SizeChangeAddMultiplier: 0
+  SizeChangeMultiplier: {x: 1, y: 1, z: 1}
 --- !u!54 &7164884558824289777
 Rigidbody:
   m_ObjectHideFlags: 0

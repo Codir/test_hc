@@ -1,9 +1,12 @@
-﻿namespace CoreGameplay.Models
+﻿using CoreGameplay.Controllers;
+using CoreGameplay.Views;
+
+namespace CoreGameplay.Models
 {
     public class CoreGameplayModel
     {
         public PlayerController Player;
-        public PlayerPathView PathView;
+        public PlayerPathController PathController;
         public TargetView Exit;
     }
 }

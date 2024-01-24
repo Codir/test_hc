@@ -1,5 +1,4 @@
-﻿using Configs;
-using CoreGameplay;
+﻿using CoreGameplay.Controllers;
 using TMPro;
 using UI.Models;
 using UnityEngine;
@@ -34,7 +33,7 @@ namespace UI.Views
         private void OnMenuButtonClicked()
         {
             SoundsController.PlaySound(Sfx.Click);
-            
+
             LevelController.Instance.UnloadLevel();
             ScreensManager.ChangeScreen(ScreensType.MainMenuScreen);
         }
@@ -42,10 +41,9 @@ namespace UI.Views
         private void OnNextButtonClicked()
         {
             SoundsController.PlaySound(Sfx.Click);
-            
+
             LevelController.Instance.NextLevel();
-            LevelController.Instance.UnloadLevel();
-            LevelController.Instance.LoadLevel();
+            LevelController.Instance.ReloadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);
         }
     }

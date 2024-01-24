@@ -1,5 +1,4 @@
-﻿using Configs;
-using CoreGameplay;
+﻿using CoreGameplay.Controllers;
 using TMPro;
 using UI.Models;
 using UnityEngine;

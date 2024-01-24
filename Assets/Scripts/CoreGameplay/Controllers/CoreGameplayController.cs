@@ -6,57 +6,48 @@ using DG.Tweening.Plugins.Options;
 using UI;
 using UnityEngine;
 
-namespace CoreGameplay
+namespace CoreGameplay.Controllers
 {
     public class CoreGameplayController
     {
-        //TODO: remove
-        public static CoreGameplayController Instance;
-
         private CoreGameplayModel _model;
         private TweenerCore<Vector3, Vector3, VectorOptions> _playerMoveTween;
+        private readonly GameConfig _gameConfig;
 
         public CoreGameplayController(GameConfig gameConfig)
         {
             _gameConfig = gameConfig;
-
-            Instance = this;
         }
 
-        private GameConfig _gameConfig;
-
-        public void OnRemoveObstacle(ObstacleView obstacle)
+        public void OnRemoveObstacle(BaseLevelObject obstacle)
         {
-            _model.PathView.OnRemoveObstacle(obstacle);
+            _model.PathController.OnRemoveObstacle(obstacle);
         }
 
-        //TODO: move LoadLevel and UnloadLevel to levels manager
-        //TODO: move it to game model
         public void OnLoadLevel(CoreGameplayModel model)
         {
             _model = model;
 
-            _model.Player.OnCurrentSizeChangedEvent += _model.PathView.OnCurrentSizeChanged;
-            _model.PathView.OnPathFreeAction += OnLevelCompleted;
-            _model.PathView.Clear();
+            _model.Player.OnCurrentSizeChangedEvent += _model.PathController.OnCurrentSizeChanged;
+            _model.PathController.OnPathFreeAction += OnLevelCompleted;
+            _model.PathController.Clear();
         }
 
         public void OnUnloadLevel()
         {
-            _model.Player.OnCurrentSizeChangedEvent -= _model.PathView.OnCurrentSizeChanged;
-            _model.PathView.OnPathFreeAction -= OnLevelCompleted;
+            _model.Player.OnCurrentSizeChangedEvent -= _model.PathController.OnCurrentSizeChanged;
+            _model.PathController.OnPathFreeAction -= OnLevelCompleted;
             _playerMoveTween?.Kill();
         }
 
         public void OnLevelCompleted()
         {
-            Debug.Log($"OnLevelCompleted");
-
-            var distanceToTarget = Vector3.Distance(_model.Player.transform.position, _model.Exit.transform.position);
+            var position = _model.Exit.transform.position;
+            var distanceToTarget = Vector3.Distance(_model.Player.transform.position, position);
             var delay = distanceToTarget / _gameConfig.PlayerMoveSpeed;
             _model.Player.StartMoveAnimation(_gameConfig.PlayerMoveSpeed);
             _playerMoveTween = _model.Player.transform
-                .DOMove(_model.Exit.transform.position - Vector3.forward * 0.5f, delay)
+                .DOMove(position - Vector3.forward * 0.5f, delay)
                 .OnComplete(OnWinAnimationCompleted);
         }
 
@@ -64,6 +55,7 @@ namespace CoreGameplay
         {
             _model.Player.EndMoveAnimation();
 
+            LevelController.Instance.UnloadLevel();
             ScreensManager.ChangeScreen(ScreensType.WinLevelScreen);
         }
     }

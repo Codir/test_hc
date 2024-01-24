@@ -3,9 +3,9 @@ using DG.Tweening.Core;
 using DG.Tweening.Plugins.Options;
 using UnityEngine;
 
-namespace CoreGameplay
+namespace CoreGameplay.Controllers
 {
-    public class ExplosionView : MonoBehaviour
+    public class ExplosionController : MonoBehaviour
     {
         [SerializeField] private float SizeMultiplier;
         [SerializeField] private float ChargeMultiplier;
@@ -27,12 +27,12 @@ namespace CoreGameplay
 
         private void OnDestroy()
         {
+            LevelController.Instance.RemoveExplosion(this);
             StopAnimation();
         }
 
         private void OnTriggerEnter(Collider otherCollider)
         {
-            //TODO: move code to separate class
             var hittable = otherCollider.gameObject.GetComponent<IHittable>();
             hittable?.OnHit(_chargeValue);
         }

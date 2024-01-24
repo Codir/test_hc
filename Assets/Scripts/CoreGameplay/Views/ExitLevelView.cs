@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using CoreGameplay.Controllers;
+using UnityEngine;
 using Utils;
 
-namespace CoreGameplay
+namespace CoreGameplay.Views
 {
     public class TargetView : MonoBehaviour
     {
@@ -32,8 +33,6 @@ namespace CoreGameplay
                 return;
 
             OpenGate();
-
-            Debug.Log("OnOpenGateTriggerEnter");
         }
 
         private void OpenGate()

@@ -1,6 +1,8 @@
 ﻿using System;
 using CoreGameplay;
+using CoreGameplay.Controllers;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 namespace Configs
 {
@@ -11,6 +13,6 @@ namespace Configs
         [Tooltip("If seed value is 0. Will be random")]
         public int Seed;
         [Range(0, 1)] public float Density;
-        public LevelObjectView LevelObject;
+        [FormerlySerializedAs("LevelObject")] public BaseLevelObject BaseLevelObject;
     }
 }

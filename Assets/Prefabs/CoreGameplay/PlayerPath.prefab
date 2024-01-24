@@ -115,6 +115,7 @@ GameObject:
   m_Component:
   - component: {fileID: 610223616677311199}
   - component: {fileID: 1934042947148468420}
+  - component: {fileID: 5023305565864761983}
   - component: {fileID: 6287129419975633582}
   m_Layer: 0
   m_Name: PlayerPath
@@ -151,8 +152,21 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3c478e4f5b26741429f777ec37939607, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  SizeChangeMultiplier: {x: 1, y: 0, z: 0}
+  ChargingComponent: {fileID: 5023305565864761983}
+--- !u!114 &5023305565864761983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2520111435151059158}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 472a48ecc49f49fbbe7d1ac3ead7ffe6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   Body: {fileID: 3451421824130393424}
+  SizeChangeMultiplier: {x: 1, y: 0, z: 0}
 --- !u!54 &6287129419975633582
 Rigidbody:
   m_ObjectHideFlags: 0

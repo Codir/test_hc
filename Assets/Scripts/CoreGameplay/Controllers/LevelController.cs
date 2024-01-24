@@ -1,36 +1,48 @@
 using System.Collections.Generic;
 using Configs;
 using CoreGameplay.Models;
+using CoreGameplay.Views;
 using UnityEngine;
 
-namespace CoreGameplay
+namespace CoreGameplay.Controllers
 {
     public class LevelController : MonoBehaviour
     {
-        public CoreGameplayController CoreGameplayController;
+        public static LevelController Instance { get; private set; }
 
         [SerializeField] private PlayerController PlayerPrefab;
-        [SerializeField] private PlayerPathView PlayerPathPrefab;
+        [SerializeField] private PlayerPathController PlayerPathPrefab;
         [SerializeField] private TargetView ExitPrefab;
         [SerializeField] private GameConfig GameConfig;
-
-        //TODO: remove
-        public static LevelController Instance;
+        [SerializeField] private float PaddingValue;
 
         [SerializeField] private Transform PlayerSpawnPosition;
         [SerializeField] private Transform ExitSpawnPosition;
-        [SerializeField] private Transform LevelContainer;
 
+        public Transform LevelContainer;
+
+        private CoreGameplayController _coreGameplayController;
         private PlayerController _player;
-        private PlayerPathView _pathView;
+        private PlayerPathController _pathController;
         private TargetView _exit;
 
-        private readonly List<LevelObjectView> _levelObjects = new();
+        private List<BaseLevelObject> _levelObjects = new();
         private Vector3 _pathPosition;
+        private List<ExplosionController> _explosionsList = new();
 
         private void Awake()
         {
+            if (Instance != null && Instance != this)
+            {
+                Destroy(this);
+                throw new System.Exception("An instance of LevelController already exists");
+            }
+
             Instance = this;
+            _levelObjects = new List<BaseLevelObject>();
+            _explosionsList = new List<ExplosionController>();
+
+            DontDestroyOnLoad(gameObject);
         }
 
         private void Start()
@@ -40,7 +52,7 @@ namespace CoreGameplay
 
         private void Init()
         {
-            CoreGameplayController = new CoreGameplayController(GameConfig);
+            _coreGameplayController = new CoreGameplayController(GameConfig);
             LoadLevel();
         }
 
@@ -48,24 +60,26 @@ namespace CoreGameplay
         {
             var levelNumber = AppController.Instance.GameStateModel.LevelNumber;
 
-            _player = Instantiate(PlayerPrefab, PlayerSpawnPosition.position, Quaternion.identity);
-            _exit = Instantiate(ExitPrefab, ExitSpawnPosition.position, Quaternion.identity);
+            var playerSpawnPosition = PlayerSpawnPosition.position;
+            _player = Instantiate(PlayerPrefab, playerSpawnPosition, Quaternion.identity);
+            var exitSpawnPosition = ExitSpawnPosition.position;
+            _exit = Instantiate(ExitPrefab, exitSpawnPosition, Quaternion.identity);
 
-            _pathPosition = (PlayerSpawnPosition.position + ExitSpawnPosition.position) / 2f;
-            _pathView = Instantiate(PlayerPathPrefab, _pathPosition, Quaternion.identity);
+            _pathPosition = (playerSpawnPosition + exitSpawnPosition) / 2f;
+            _pathController = Instantiate(PlayerPathPrefab, _pathPosition, Quaternion.identity);
 
-            _player.OnCurrentSizeChangedEvent += _pathView.OnCurrentSizeChanged;
-            _pathView.OnPathFreeAction += CoreGameplayController.OnLevelCompleted;
-            _pathView.Clear();
+            _player.OnCurrentSizeChangedEvent += _pathController.OnCurrentSizeChanged;
+            _pathController.OnPathFreeAction += _coreGameplayController.OnLevelCompleted;
+            _pathController.Clear();
 
             var coreGameplayModel = new CoreGameplayModel
             {
                 Player = _player,
-                PathView = _pathView,
+                PathController = _pathController,
                 Exit = _exit
             };
 
-            CoreGameplayController.OnLoadLevel(coreGameplayModel);
+            _coreGameplayController.OnLoadLevel(coreGameplayModel);
             GenerateLevel(levelNumber);
         }
 
@@ -76,13 +90,11 @@ namespace CoreGameplay
             if (levelConfig == null) return;
 
             var segmentsCount = levelConfig.Segments.Length;
-            //TODO: take 2f from padding value
-            var pathLength = (PlayerSpawnPosition.position - ExitSpawnPosition.position).magnitude - 2f;
+            var pathLength = (PlayerSpawnPosition.position - ExitSpawnPosition.position).magnitude - PaddingValue;
             var segmentLength = segmentsCount > 0 ? pathLength / levelConfig.Segments.Length : pathLength;
 
             for (var segmentId = 0; segmentId < segmentsCount; segmentId++)
             {
-                //TODO: move all this data to model
                 var segmentPosition =
                     _pathPosition - (pathLength / 2f - (segmentId + 0.5f) * segmentLength) * Vector3.forward;
                 GenerateSegment(levelConfig.Segments[segmentId], segmentLength, segmentPosition);
@@ -100,8 +112,8 @@ namespace CoreGameplay
 
         private void GenerateSegment(LevelSegmentConfig segmentConfig, float segmentLength, Vector3 segmentPosition)
         {
-            var sizeX = segmentConfig.LevelObject.Size.x;
-            var sizeZ = segmentConfig.LevelObject.Size.z;
+            var sizeX = segmentConfig.BaseLevelObject.Size.x;
+            var sizeZ = segmentConfig.BaseLevelObject.Size.z;
             var rows = segmentConfig.Width / sizeX;
             var cols = segmentLength / sizeZ;
 
@@ -116,11 +128,11 @@ namespace CoreGameplay
                     var levelObjectPosition = segmentPosition;
                     levelObjectPosition.x += (-rows / 2f + x + 1) * sizeX;
                     levelObjectPosition.z += (-cols / 2f + z + 1) * sizeZ;
-                    var levelObject = ObjectsPoolController.GetLevelObject(segmentConfig.LevelObject,
+                    var levelObject = ObjectsPoolController.GetLevelObject(segmentConfig.BaseLevelObject,
                         levelObjectPosition,
                         Quaternion.identity);
-                    //var levelObject = Instantiate(segmentConfig.LevelObject, LevelContainer);
-                    //levelObject.transform.position = levelObjectPosition;
+                    //var baseLevelObject = Instantiate(segmentConfig.BaseLevelObject, LevelContainer);
+                    //baseLevelObject.transform.position = levelObjectPosition;
                     _levelObjects.Add(levelObject);
                 }
             }
@@ -128,20 +140,26 @@ namespace CoreGameplay
 
         public void UnloadLevel()
         {
-            _player.OnCurrentSizeChangedEvent -= _pathView.OnCurrentSizeChanged;
-            _pathView.OnPathFreeAction -= CoreGameplayController.OnLevelCompleted;
-            CoreGameplayController.OnUnloadLevel();
+            _player.OnCurrentSizeChangedEvent -= _pathController.OnCurrentSizeChanged;
+            _pathController.OnPathFreeAction -= _coreGameplayController.OnLevelCompleted;
+            _coreGameplayController.OnUnloadLevel();
 
             foreach (var levelObject in _levelObjects)
             {
                 ObjectsPoolController.ReturnLevelObjectToPool(levelObject);
-                //Destroy(levelObject.gameObject);
+            }
+
+            foreach (var explosion in _explosionsList)
+            {
+                Destroy(explosion.gameObject);
             }
 
             _levelObjects.Clear();
 
+            if (_player == null) return;
+
             Destroy(_player.gameObject);
-            Destroy(_pathView.gameObject);
+            Destroy(_pathController.gameObject);
             Destroy(_exit.gameObject);
         }
 
@@ -154,6 +172,21 @@ namespace CoreGameplay
         {
             UnloadLevel();
             LoadLevel();
+        }
+
+        public void OnRemoveObstacle(BaseLevelObject baseLevelObject)
+        {
+            _coreGameplayController.OnRemoveObstacle(baseLevelObject);
+        }
+
+        public void AddExplosion(ExplosionController explosion)
+        {
+            _explosionsList.Add(explosion);
+        }
+
+        public void RemoveExplosion(ExplosionController explosion)
+        {
+            _explosionsList.Remove(explosion);
         }
     }
 }

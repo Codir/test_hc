@@ -9,7 +9,6 @@ public class AppController
         get { return _instance ??= new AppController(); }
     }
 
-    public ObjectsPoolController ObjectsPoolController;
     public GameStateModel GameStateModel => _gameStateModel;
 
     private readonly GameStateModel _gameStateModel;

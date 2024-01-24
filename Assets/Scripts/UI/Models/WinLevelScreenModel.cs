@@ -2,7 +2,7 @@
 {
     public class WinScreenModel : IBaseScreenModel
     {
-        public int Level;
+        public readonly int Level;
 
         public WinScreenModel()
         {
