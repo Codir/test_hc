@@ -16,7 +16,7 @@ namespace UI.Views
         {
             Model = new GameScreenModel();
 
-            LevelLabel.text = $"{(Model.Level + 1)}";
+            LevelLabel.text = $"{Model.Level + 1}";
 
             MenuButton.onClick.AddListener(OnMenuButtonClicked);
             ReplayButton.onClick.AddListener(OnReplayButtonClicked);

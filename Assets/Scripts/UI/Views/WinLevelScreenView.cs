@@ -16,7 +16,7 @@ namespace UI.Views
         {
             Model = new WinScreenModel();
 
-            LevelLabel.text = $"{(Model.Level + 1)}";
+            LevelLabel.text = $"{Model.Level + 1}";
 
             MenuButton.onClick.AddListener(OnMenuButtonClicked);
             NextButton.onClick.AddListener(OnNextButtonClicked);

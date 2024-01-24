@@ -15,7 +15,7 @@ namespace UI.Views
         {
             Model = new MenuScreenModel();
 
-            LevelLabel.text = $"{(Model.Level + 1)}";
+            LevelLabel.text = $"{Model.Level + 1}";
 
             PlayButton.onClick.AddListener(OnPlayButtonClicked);
         }
@@ -28,7 +28,7 @@ namespace UI.Views
         private void OnPlayButtonClicked()
         {
             SoundsController.PlaySound(Sfx.Click);
-            
+
             LevelController.Instance.LoadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);
         }

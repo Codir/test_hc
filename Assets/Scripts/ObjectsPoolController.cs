@@ -36,10 +36,7 @@ public class ObjectsPoolController : MonoBehaviour
         _objectsPools = new Dictionary<string, BaseLevelObject[]>();
         _objectsContainers = new Dictionary<string, Transform>();
 
-        foreach (var objectsPoolConfig in ObjectsPoolConfigs)
-        {
-            CreateObjectsPool(objectsPoolConfig);
-        }
+        foreach (var objectsPoolConfig in ObjectsPoolConfigs) CreateObjectsPool(objectsPoolConfig);
     }
 
     private void CreateObjectsPool(ObjectsPoolConfig objectsPoolConfig)
@@ -61,10 +58,7 @@ public class ObjectsPoolController : MonoBehaviour
         where T : BaseLevelObject
     {
         var key = typeof(T).ToString();
-        if (_objectsPools.ContainsKey(key))
-        {
-            ClearObjectsPool<T>();
-        }
+        if (_objectsPools.ContainsKey(key)) ClearObjectsPool<T>();
 
         var objectsPool = new BaseLevelObject[count];
         var parent = GetParent(prefab.Name);
@@ -84,10 +78,7 @@ public class ObjectsPoolController : MonoBehaviour
 
         foreach (var (key, value) in _objectsPools)
         {
-            foreach (var levelObject in value)
-            {
-                Destroy(levelObject.gameObject);
-            }
+            foreach (var levelObject in value) Destroy(levelObject.gameObject);
 
             Destroy(_objectsContainers[key].gameObject);
         }
@@ -102,10 +93,7 @@ public class ObjectsPoolController : MonoBehaviour
         var key = typeof(T).ToString();
         if (!_objectsPools.ContainsKey(key)) return;
 
-        foreach (var levelObject in _objectsPools[key])
-        {
-            Destroy(levelObject.gameObject);
-        }
+        foreach (var levelObject in _objectsPools[key]) Destroy(levelObject.gameObject);
 
         _objectsPools.Remove(key);
 
@@ -147,12 +135,8 @@ public class ObjectsPoolController : MonoBehaviour
         var objectsPool = _objectsPools[prefab.Name];
 
         foreach (var levelObject in objectsPool)
-        {
             if (!levelObject.gameObject.activeSelf)
-            {
                 return levelObject as T;
-            }
-        }
 
         return objectsPool.First() as T;
     }

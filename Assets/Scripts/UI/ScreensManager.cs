@@ -32,13 +32,9 @@ namespace UI
         private void Awake()
         {
             if (_instance == null)
-            {
                 _instance = this;
-            }
             else
-            {
                 Debug.LogError("ScreensManager _instance already exist");
-            }
         }
 
         private void Start()
