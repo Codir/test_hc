@@ -21,6 +21,8 @@ namespace UI.Views
 
             MenuButton.onClick.AddListener(OnMenuButtonClicked);
             NextButton.onClick.AddListener(OnNextButtonClicked);
+
+            SoundsController.PlaySound(Sfx.Win);
         }
 
         private void OnDisable()
@@ -31,17 +33,20 @@ namespace UI.Views
 
         private void OnMenuButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+            
             LevelController.Instance.UnloadLevel();
             ScreensManager.ChangeScreen(ScreensType.MainMenuScreen);
         }
 
         private void OnNextButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+            
             LevelController.Instance.NextLevel();
             LevelController.Instance.UnloadLevel();
             LevelController.Instance.LoadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);
-
         }
     }
 }

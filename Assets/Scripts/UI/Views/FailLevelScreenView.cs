@@ -21,6 +21,8 @@ namespace UI.Views
 
             MenuButton.onClick.AddListener(OnMenuButtonClicked);
             ReplayButton.onClick.AddListener(OnReplayButtonClicked);
+
+            SoundsController.PlaySound(Sfx.Fail);
         }
 
         private void OnDisable()
@@ -31,12 +33,16 @@ namespace UI.Views
 
         private void OnMenuButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+            
             LevelController.Instance.UnloadLevel();
             ScreensManager.ChangeScreen(ScreensType.MainMenuScreen);
         }
 
         private void OnReplayButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+            
             LevelController.Instance.UnloadLevel();
             LevelController.Instance.LoadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);

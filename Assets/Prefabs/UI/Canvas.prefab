@@ -110,11 +110,19 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 359158325721566598}
     m_Modifications:
+    - target: {fileID: 136129505688591109, guid: 4b85be2fd038d0a48914b8ea681e38ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 938521351324730032, guid: 4b85be2fd038d0a48914b8ea681e38ed, type: 3}
       propertyPath: m_Name
       value: Screens
       objectReference: {fileID: 0}
     - target: {fileID: 1422987403952701427, guid: 4b85be2fd038d0a48914b8ea681e38ed, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5448751524821265054, guid: 4b85be2fd038d0a48914b8ea681e38ed, type: 3}
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}

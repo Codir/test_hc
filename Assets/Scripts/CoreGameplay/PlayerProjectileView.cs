@@ -55,8 +55,6 @@ namespace CoreGameplay
 
             hittable.OnHit(_chargeValue);
 
-            //TODO: add SFX and vibration feedback
-
             Hide();
         }
 
@@ -67,7 +65,7 @@ namespace CoreGameplay
 
         public void Shoot(Vector3 direction)
         {
-            //TODO: add SFX
+            SoundsController.PlaySound(Sfx.Shoot);
 
             _rigidbody.AddForce(direction * ModeSpeed * 1000f);
         }

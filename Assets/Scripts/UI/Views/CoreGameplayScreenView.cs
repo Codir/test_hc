@@ -15,7 +15,7 @@ namespace UI.Views
         private void OnEnable()
         {
             Model = new GameScreenModel();
-            
+
             LevelLabel.text = $"{(Model.Level + 1)}";
 
             MenuButton.onClick.AddListener(OnMenuButtonClicked);
@@ -30,12 +30,16 @@ namespace UI.Views
 
         private void OnMenuButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+
             LevelController.Instance.UnloadLevel();
             ScreensManager.ChangeScreen(ScreensType.MainMenuScreen);
         }
 
         private void OnReplayButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+
             LevelController.Instance.UnloadLevel();
             LevelController.Instance.LoadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);

@@ -14,7 +14,7 @@ namespace CoreGameplay
         private TweenerCore<Vector3, Vector3, VectorOptions> _tween;
 
         private float _chargeValue;
-        
+
         public void Init(float value)
         {
             _chargeValue = value * ChargeMultiplier;
@@ -44,8 +44,8 @@ namespace CoreGameplay
 
         private void OnAnimationCompleted()
         {
-            //TODO: add SFX
-            //TODO: move to pooling manager
+            SoundsController.PlaySound(Sfx.Splash);
+
             Destroy(gameObject);
         }
     }

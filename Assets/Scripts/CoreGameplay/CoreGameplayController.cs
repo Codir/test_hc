@@ -52,8 +52,6 @@ namespace CoreGameplay
         {
             Debug.Log($"OnLevelCompleted");
 
-            //TODO: add SFX
-
             var distanceToTarget = Vector3.Distance(_model.Player.transform.position, _model.Exit.transform.position);
             var delay = distanceToTarget / _gameConfig.PlayerMoveSpeed;
             _model.Player.StartMoveAnimation(_gameConfig.PlayerMoveSpeed);
@@ -64,9 +62,7 @@ namespace CoreGameplay
 
         private void OnWinAnimationCompleted()
         {
-            //TODO: add SFX and vibration feedback
             _model.Player.EndMoveAnimation();
-            Debug.Log($"OnWinAnimationCompleted");
 
             ScreensManager.ChangeScreen(ScreensType.WinLevelScreen);
         }

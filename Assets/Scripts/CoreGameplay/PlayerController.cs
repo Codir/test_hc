@@ -37,6 +37,8 @@ public class PlayerController : MonoBehaviour
 
     private float _currentSize;
     private bool _isTapped;
+    private static readonly int IsMoving = Animator.StringToHash("IsMoving");
+    private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");
 
     void Start()
     {
@@ -47,15 +49,14 @@ public class PlayerController : MonoBehaviour
     {
         InitProjectilesPool();
 
-        //TODO: add load start value from level config
         CurrentSize = StartSize;
     }
 
     public void StartMoveAnimation(float speed)
     {
         //TODO: move to player view or controller of animator
-        PlayerAnimator.SetBool("IsMoving", true);
-        PlayerAnimator.SetFloat("MoveSpeed", speed);
+        PlayerAnimator.SetBool(IsMoving, true);
+        PlayerAnimator.SetFloat(MoveSpeed, speed);
     }
 
     public void EndMoveAnimation()

@@ -28,6 +28,8 @@ namespace UI.Views
 
         private void OnPlayButtonClicked()
         {
+            SoundsController.PlaySound(Sfx.Click);
+            
             LevelController.Instance.LoadLevel();
             ScreensManager.ChangeScreen(ScreensType.CoreGameplayScreen);
         }
