@@ -47,9 +47,45 @@ PrefabInstance:
       propertyPath: m_audioClip
       value: 
       objectReference: {fileID: 8300000, guid: d97174fa8e0b23440993df0b248274ef, type: 3}
+    - target: {fileID: 140678227714088184, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1106257712134706980, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1590965215702187109, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 2033910047038958800, guid: 851c09a717795a14b8d823892b06d974, type: 3}
       propertyPath: m_Name
       value: SoundsController
+      objectReference: {fileID: 0}
+    - target: {fileID: 2899345718876934896, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 3538058555685157629, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4079442551303507525, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5733889381825803833, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7281595092206722414, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8114423668711383697, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8523450293029207773, guid: 851c09a717795a14b8d823892b06d974, type: 3}
       propertyPath: m_LocalPosition.x
@@ -89,6 +125,14 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8523450293029207773, guid: 851c09a717795a14b8d823892b06d974, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8554763286208321691, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 9128085411364875762, guid: 851c09a717795a14b8d823892b06d974, type: 3}
+      propertyPath: m_PlayOnAwake
       value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
@@ -158,6 +202,17 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9f1b3b738b213d849a75cee4005ea6a9, type: 3}
+--- !u!114 &8648711014965182189 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 5532476394765996335, guid: 9f1b3b738b213d849a75cee4005ea6a9, type: 3}
+  m_PrefabInstance: {fileID: 3801364844905705410}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 29a1f2ee76b1492ebbd4eb5a296f0aa8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!4 &8755245304633821370 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 5566950620790269816, guid: 9f1b3b738b213d849a75cee4005ea6a9, type: 3}
@@ -255,6 +310,10 @@ PrefabInstance:
       propertyPath: PlayerPathPrefab
       value: 
       objectReference: {fileID: 1934042947148468420, guid: e9f27f9c361eeb54697cba65bbab0728, type: 3}
+    - target: {fileID: 3915292016371540169, guid: e05695d5366d4944a96978afbf01738c, type: 3}
+      propertyPath: ObjectsPoolController
+      value: 
+      objectReference: {fileID: 8648711014965182189}
     - target: {fileID: 3915292016371540169, guid: e05695d5366d4944a96978afbf01738c, type: 3}
       propertyPath: CoreGameplayController
       value: 

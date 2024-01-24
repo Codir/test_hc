@@ -8,7 +8,7 @@
         {
             LevelNumber = 0;
         }
-        
+
         public void Save()
         {
         }

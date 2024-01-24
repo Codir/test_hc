@@ -7,11 +7,11 @@ namespace CoreGameplay.Components
     public class ChargingComponent : MonoBehaviour
     {
         public event Action<float> OnCurrentSizeChangedEvent;
-        
+
         [SerializeField] private Transform Body;
         [SerializeField] private float SizeChangeAddMultiplier;
         [SerializeField] private Vector3 SizeChangeMultiplier;
-        
+
         public float CurrentCharge
         {
             get => _currentCharge;
@@ -21,14 +21,14 @@ namespace CoreGameplay.Components
                 OnCurrentSizeChanged();
             }
         }
-        
+
         private float _currentCharge;
-        
+
         public void Add(float value)
         {
             CurrentCharge += value * SizeChangeAddMultiplier;
         }
-        
+
         private void OnCurrentSizeChanged()
         {
             Body.localScale = Body.localScale.ChangeFromMultipliers(SizeChangeMultiplier * CurrentCharge);

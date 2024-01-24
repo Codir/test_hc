@@ -12,6 +12,7 @@ namespace CoreGameplay.Controllers
 
         [SerializeField] private PlayerController PlayerPrefab;
         [SerializeField] private PlayerPathController PlayerPathPrefab;
+        [SerializeField] private ObjectsPoolController ObjectsPoolController;
         [SerializeField] private TargetView ExitPrefab;
         [SerializeField] private GameConfig GameConfig;
         [SerializeField] private float PaddingValue;
@@ -52,6 +53,8 @@ namespace CoreGameplay.Controllers
 
         private void Init()
         {
+            ObjectsPoolController.Init();
+            
             _coreGameplayController = new CoreGameplayController(GameConfig);
             LoadLevel();
         }
@@ -120,21 +123,17 @@ namespace CoreGameplay.Controllers
             Random.InitState(segmentConfig.Seed > 0 ? segmentConfig.Seed : Random.Range(0, int.MaxValue));
 
             for (var x = 0; x < rows; x++)
+            for (var z = 0; z < cols; z++)
             {
-                for (var z = 0; z < cols; z++)
-                {
-                    if (Random.value > segmentConfig.Density) continue;
+                if (Random.value > segmentConfig.Density) continue;
 
-                    var levelObjectPosition = segmentPosition;
-                    levelObjectPosition.x += (-rows / 2f + x + 1) * sizeX;
-                    levelObjectPosition.z += (-cols / 2f + z + 1) * sizeZ;
-                    var levelObject = ObjectsPoolController.GetLevelObject(segmentConfig.BaseLevelObject,
-                        levelObjectPosition,
-                        Quaternion.identity);
-                    //var baseLevelObject = Instantiate(segmentConfig.BaseLevelObject, LevelContainer);
-                    //baseLevelObject.transform.position = levelObjectPosition;
-                    _levelObjects.Add(levelObject);
-                }
+                var levelObjectPosition = segmentPosition;
+                levelObjectPosition.x += (-rows / 2f + x + 1) * sizeX;
+                levelObjectPosition.z += (-cols / 2f + z + 1) * sizeZ;
+                var levelObject = ObjectsPoolController.GetLevelObject(segmentConfig.BaseLevelObject,
+                    levelObjectPosition,
+                    Quaternion.identity);
+                _levelObjects.Add(levelObject);
             }
         }
 
@@ -144,15 +143,9 @@ namespace CoreGameplay.Controllers
             _pathController.OnPathFreeAction -= _coreGameplayController.OnLevelCompleted;
             _coreGameplayController.OnUnloadLevel();
 
-            foreach (var levelObject in _levelObjects)
-            {
-                ObjectsPoolController.ReturnLevelObjectToPool(levelObject);
-            }
+            foreach (var levelObject in _levelObjects) ObjectsPoolController.ReturnLevelObjectToPool(levelObject);
 
-            foreach (var explosion in _explosionsList)
-            {
-                Destroy(explosion.gameObject);
-            }
+            foreach (var explosion in _explosionsList) Destroy(explosion.gameObject);
 
             _levelObjects.Clear();
 

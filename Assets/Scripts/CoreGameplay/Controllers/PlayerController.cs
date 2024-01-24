@@ -32,7 +32,7 @@ namespace CoreGameplay.Controllers
         private static readonly int MoveSpeed = Animator.StringToHash("MoveSpeed");
 
 
-        void Start()
+        private void Start()
         {
             Init();
         }
@@ -89,20 +89,15 @@ namespace CoreGameplay.Controllers
         private PlayerProjectileView GetProjectileFromPool()
         {
             foreach (var projectile in _projectilesPool)
-            {
                 if (!projectile.gameObject.activeSelf)
                     return projectile;
-            }
 
             return _projectilesPool.First();
         }
 
-        void Update()
+        private void Update()
         {
-            if (Input.GetMouseButtonDown(0))
-            {
-                _isTapped = true;
-            }
+            if (Input.GetMouseButtonDown(0)) _isTapped = true;
 
             if (Input.GetMouseButtonUp(0))
             {
@@ -111,10 +106,7 @@ namespace CoreGameplay.Controllers
                 OnFinishTap();
             }
 
-            if (_isTapped && _currentProjectile == null)
-            {
-                CreateProjectile();
-            }
+            if (_isTapped && _currentProjectile == null) CreateProjectile();
 
             var value = GrownProjectileSpeed * Time.deltaTime;
             if (_isTapped && _currentProjectile != null && ChargingComponent.CurrentCharge >= value)

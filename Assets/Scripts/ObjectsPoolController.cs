@@ -1,15 +1,7 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using CoreGameplay.Controllers;
 using UnityEngine;
-
-[Serializable]
-public class ObjectsPoolConfig
-{
-    public BaseLevelObject Prefab;
-    public int Count;
-}
 
 public class ObjectsPoolController : MonoBehaviour
 {
@@ -26,12 +18,7 @@ public class ObjectsPoolController : MonoBehaviour
         _levelContainer = LevelContainer;
     }
 
-    private void Start()
-    {
-        Init();
-    }
-
-    private void Init()
+    public void Init()
     {
         _objectsPools = new Dictionary<string, BaseLevelObject[]>();
         _objectsContainers = new Dictionary<string, Transform>();
@@ -104,9 +91,8 @@ public class ObjectsPoolController : MonoBehaviour
     public static T GetLevelObject<T>(T prefab, Vector3 position, Quaternion rotation)
         where T : BaseLevelObject
     {
-        var key = typeof(T).ToString();
         var parent = GetParent(prefab.Name);
-        var levelObject = !_objectsPools.ContainsKey(key)
+        var levelObject = !_objectsPools.ContainsKey(prefab.Name)
             ? GetLevelObjectFromPool<T>(prefab)
             : Instantiate(prefab, parent);
 
